@@ -1,0 +1,15 @@
+{
+  "name": "vue-dm",
+  "version": "1.0.0",
+  "description": "vue3 data model class",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ricky",
+  "license": "ISC",
+  "dependencies": {
+    "vue": "^3.2.36"
+  }
+}
