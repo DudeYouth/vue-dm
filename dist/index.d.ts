@@ -6,16 +6,24 @@ export declare class DataModel<T extends object> {
     /** 主数据 */
     private __data;
     /** 主数据 */
+    private __proxyData;
+    /** 主数据 */
     __templateData: Ref<T>;
     /** 更新事件回调函数列表 */
     private __updateCallbackList;
-    set data(data: UnwrapNestedRefs<T> | T);
-    get data(): UnwrapNestedRefs<T> | T;
+    protected set data(data: UnwrapNestedRefs<T> | T);
+    protected get data(): UnwrapNestedRefs<T> | T;
     /**
      * 触发更新组数据事件
      * @param data 主数据
      */
     private __update;
+    /**
+     * 代理的data对象
+     * @param data
+     * @returns
+     */
+    private __createProxyData;
     /**
      * 监听主数据更新
      * @returns
@@ -34,6 +42,7 @@ export declare class DataModel<T extends object> {
      */
     private __getProto;
     setData(data: UnwrapNestedRefs<T> | T): void;
+    getData(): T | UnwrapNestedRefs<T>;
     getTemplateData(): Ref<T>;
     /**
      * 构造方法

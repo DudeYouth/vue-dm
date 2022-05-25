@@ -1,6 +1,6 @@
 {
   "name": "vue-dm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "vue3 data model class",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

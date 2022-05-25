@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "ES5",
+    "module": "umd",
     "strict": true,
     "jsx": "preserve",
     "moduleResolution": "node",
@@ -14,7 +14,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "lib": [
-      "esnext",
+      "es2015",
       "dom",
       "dom.iterable",
       "scripthost"

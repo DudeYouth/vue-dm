@@ -38,11 +38,13 @@ export class DataModel<T extends object> {
   /** 主数据 */
   private __data!: UnwrapNestedRefs<T> | T;
   /** 主数据 */
+  private __proxyData!: UnwrapNestedRefs<T> | T;
+  /** 主数据 */
   public __templateData!: Ref<T>;
   /** 更新事件回调函数列表 */
   private __updateCallbackList: Array<(data: UnwrapNestedRefs<T> | T) => void> =
     [];
-  public set data(data: UnwrapNestedRefs<T> | T) {
+  protected set data(data: UnwrapNestedRefs<T> | T) {
     if (!this.__templateData) {
       this.__templateData = ref(data) as Ref<T>;
     } else {
@@ -51,7 +53,7 @@ export class DataModel<T extends object> {
     this.__data = data;
     this.__update(data);
   }
-  public get data(): UnwrapNestedRefs<T> | T {
+  protected get data(): UnwrapNestedRefs<T> | T {
     return this.__data;
   }
   /**
@@ -62,6 +64,37 @@ export class DataModel<T extends object> {
     this.__updateCallbackList.forEach((fun) => {
       fun(data);
     });
+  }
+  /**
+   * 代理的data对象
+   * @param data
+   * @returns
+   */
+  private __createProxyData(): UnwrapNestedRefs<T> | T {
+    let newData = null;
+    if (this.data instanceof Array) {
+      newData = Object.assign([], this.data);
+    } else {
+      newData = Object.assign({}, this.data);
+    }
+    if (this.__proxyData) {
+      return this.__proxyData;
+    }
+    this.__proxyData = new Proxy(newData, {
+      get: (target: never[] & T & any[], p: string, receiver: any) => {
+        return (this.data as T)[p as keyof T];
+      },
+      set: (
+        target: ({} & T) | ({} & UnwrapNestedRefs<T>),
+        p: string,
+        value: any,
+        receiver: any
+      ) => {
+        (this.data as T)[p as keyof T] = value;
+        return true;
+      },
+    });
+    return this.__proxyData;
   }
 
   /**
@@ -91,6 +124,9 @@ export class DataModel<T extends object> {
   }
   public setData(data: UnwrapNestedRefs<T> | T) {
     this.data = data as UnwrapNestedRefs<T>;
+  }
+  public getData() {
+    return this.__createProxyData();
   }
   public getTemplateData() {
     return this.__templateData;
