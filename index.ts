@@ -65,37 +65,6 @@ export class DataModel<T extends object> {
       fun(data);
     });
   }
-  /**
-   * 代理的data对象
-   * @param data
-   * @returns
-   */
-  private __createProxyData(): UnwrapNestedRefs<T> | T {
-    let newData = null;
-    if (this.data instanceof Array) {
-      newData = Object.assign([], this.data);
-    } else {
-      newData = Object.assign({}, this.data);
-    }
-    if (this.__proxyData) {
-      return this.__proxyData;
-    }
-    this.__proxyData = new Proxy(newData, {
-      get: (target: never[] & T & any[], p: string, receiver: any) => {
-        return (this.data as T)[p as keyof T];
-      },
-      set: (
-        target: ({} & T) | ({} & UnwrapNestedRefs<T>),
-        p: string,
-        value: any,
-        receiver: any
-      ) => {
-        (this.data as T)[p as keyof T] = value;
-        return true;
-      },
-    });
-    return this.__proxyData;
-  }
 
   /**
    * 监听主数据更新
@@ -125,8 +94,14 @@ export class DataModel<T extends object> {
   public setData(data: UnwrapNestedRefs<T> | T) {
     this.data = data as UnwrapNestedRefs<T>;
   }
-  public getData() {
-    return this.__createProxyData();
+  /**
+   * 获取主数据
+   * @param callback 主数据更新的回调
+   * @returns 主数据
+   */
+  public getData(callback: (data: UnwrapNestedRefs<T> | T) => void) {
+    this.onDataUpdate(callback);
+    return this.data;
   }
   public getTemplateData() {
     return this.__templateData;

@@ -22,9 +22,19 @@
 
 > + Model装饰器： 所有基于vue-dm的创建的数据模型都必须使用Model装饰器
 > + ChildModel装饰器：通过该装饰器可便捷的将子模型挂在到父模型
-> + DataModel基类：vue-dm的核心实现，提供了data、getTemplateData、onDataUpdate等属性、方法
+> + DataModel基类：vue-dm的核心实现，提供了data、getTemplateData、getData、onDataUpdate等属性、方法
 
-### 四、示例
+### 四、DataModel提供的属性
+| 参数 | 说明 | 类型 | 默认值 |
+| -- | -- | -- | -- |
+| data	| 主数据（受保护属性，实例无法访问） | T | undefined |
+
+### 五、DataModel提供的方法
+| 参数 | 说明 | 参数 | 返回类型 |
+| -- | -- | -- | -- |
+| getData	| 获取主数据 | (data: T) => void | T |
+| getTemplateData | 获取模版数据 | 无 | Ref<T> |
+### 六、示例
 
 + 订单地址模型
 ```typescript
@@ -148,6 +158,7 @@ const orderFormData = new OrderFormData();
  * 表单数据
  */
 let formData = orderFormData.getTemplateData();
+let data = orderFormData.getData((newData) => data = newData);
 
 /**
  * 设置数据
@@ -187,7 +198,11 @@ const handleSave = () => {
  * 设置订单地址
  */
 const handleAddress = () => {
-  orderFormData.addressListModel.setName('地址');
+  if (data.code === '123') {
+    orderFormData.addressListModel.setName('地址');
+  } else {
+    console.log('无法删除订单');
+  }
 };
 
 /**
